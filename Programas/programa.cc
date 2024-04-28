@@ -4,7 +4,7 @@
  * Inteligencia Artificial Avanzada
  * 
  * @author  Dario Dominguez Gonzalez
- * @date    19/04/2024
+ * @date    28/04/2024
  * @brief   Main del programa. Iniciara el proceso de lectura de texto y calculara el tiempo total trancurrido.
 */
 
@@ -13,18 +13,39 @@
 #include <chrono>
 
 #include "vocavulario.h"
-#include "lectorArchivo.h"
+#include "phishing.h"
+#include "safe.h"
+#include "procesador.h"
 
 int main() {
-  std::string nombreArchivoEntrada = "/home/usuario/IAA/Proyecto_Parte_1/Ficheros/PH_train.csv";
-  std::string nombreArchivoSalida = "/home/usuario/IAA/Proyecto_Parte_1/Ficheros/vocavulario.txt";
-  vocavulario vocavulario;
-  lectorArchivo lector(nombreArchivoEntrada, nombreArchivoSalida);
+  std::string nombreArchivoEntrada = "../Ficheros/PH_train.csv";
+  std::string nombreArchivoSalidaVocavulario = "../Ficheros/vocavulario.txt";
+  std::string nombreArchivoSalidaPhishing = "../Ficheros/corpus_P.txt";
+  std::string nombreArchivoSalidaSafe = "../Ficheros/corpus_S.txt";
+  std::string nombreArchivoModeloPhishing = "../Ficheros/modelo_lenguaje_P.txt";
+  std::string nombreArchivoModeloSafe = "../Ficheros/modelo_lenguaje_S.txt";
+  vocavulario vocavularioGeneral(nombreArchivoSalidaVocavulario);
+  phishing vocavularioPhishing(nombreArchivoSalidaPhishing);
+  safe vocavularioSafe(nombreArchivoSalidaSafe);
+  procesador procesador(nombreArchivoEntrada, nombreArchivoModeloSafe, nombreArchivoModeloPhishing);
+
+  //Generear vocavulario y corpus
   auto start = std::chrono::high_resolution_clock::now();
-  lector.procesarTexto(vocavulario);
+  procesador.procesarArchivo(vocavularioGeneral, vocavularioPhishing, vocavularioSafe);
   auto end = std::chrono::high_resolution_clock::now();
   auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
   double segundos = duration.count() / 1000000.0;
-  std::cout << "Tiempo de ejecución: " << segundos << " segundos" << std::endl;
+  std::cout << "Tiempo de ejecución generar vocavulario y corpus: " << segundos << " segundos" << std::endl;
+
+  //Generar Modelo de Lenguaje
+  start = std::chrono::high_resolution_clock::now();
+  std::map<std::string, double> modeloSafe = procesador.generarModeloLenguajeSafe(vocavularioGeneral, vocavularioSafe);
+  std::map<std::string, double> modeloPhishing = procesador.generarModeloLenguajePhishing(vocavularioGeneral, vocavularioPhishing);
+  procesador.escribirModeloLenguajeSafe(vocavularioGeneral, vocavularioSafe, modeloSafe);
+  procesador.escribirModeloLenguajePhishing(vocavularioGeneral, vocavularioPhishing, modeloPhishing);
+  end = std::chrono::high_resolution_clock::now();
+  duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+  segundos = duration.count() / 1000000.0;
+  std::cout << "Tiempo de ejecución Modelo de Lenguaje: " << segundos << " segundos" << std::endl;
   return 0;
 }

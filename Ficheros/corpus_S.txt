@@ -1,0 +1,2 @@
+Numero de palabras del corpus Safe: 1
+Palabra: prueba  Frec: 1

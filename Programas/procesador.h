@@ -4,40 +4,44 @@
  * Inteligencia Artificial Avanzada
  * 
  * @author  Dario Dominguez Gonzalez
- * @date    19/04/2024
- * @brief   Definicion de la clase lectorArchivo y del unordered_set "stopwords".
+ * @date    28/04/2024
+ * @brief   Definicion de la clase procesador y del unordered_set "stopwords".
 */
 
-#ifndef LECTORARCHIVO_H
-#define LECTORARCHIVO_H
+#ifndef procesador_H
+#define procesador_H
 
 #include <fstream>
 #include <iostream>
-#include <sstream>
 #include <string>
-#include <vector>
-#include <cctype>
-#include <algorithm>
 #include <unordered_set>
 #include <regex>
+#include <map>
+#include <cmath>
 
 #include "vocavulario.h"
+#include "phishing.h"
+#include "safe.h"
 
 class vocavulario;
+class phishing;
+class safe;
 
 /**
- * @brief Clase lectorArchivo que estara a cargo de la lectura y filtracion de los correos leidos.
+ * @brief Clase procesador que estara a cargo de la lectura y filtracion de los correos leidos.
  * 
- * @param ficheroEntrada_  -  Atributo privado que guarda el nombre del fichero que se debe leer.
- * @param ficheroSalida_   -  Atributo privado que guarda el nombre del fichero donde se va a escribir.
+ * @param ficheroEntrada_                   -  Atributo privado que guarda el nombre del fichero que se debe leer.
+ * @param ficheroModeloLenguajeSafe_        -  Atributo privado que guarda el nombre del fichero donde se va a escribir el Modelo de Lenguaje Safe.
+ * @param ficheroModeloLenguajePhishing_    -  Atributo privado que guarda el nombre del fichero donde se va a escribir el Modelo de Lenguaje Phishing.
 */
-class lectorArchivo {
+class procesador {
  private:
   std::string ficheroEntrada_;
-  std::string ficheroSalida_;
+  std::string ficheroModeloLenguajeSafe_;
+  std::string ficheroModeloLenguajePhishing_;
  public:
-  lectorArchivo (std::string, std::string);
-  void procesarTexto (vocavulario&);
+  procesador (std::string, std::string, std::string);
+  void procesarArchivo (vocavulario&, phishing&, safe&);
   void eliminarSignos (std::string&);
   void convertirMinusculas (std::string&);
   void eliminarEspaciosDobles (std::string&);
@@ -48,6 +52,13 @@ class lectorArchivo {
   void eliminarNumeros(std::string&);
   void eliminarCaracteresNoImprimibles(std::string&);
   void añadirAlDiccionario (vocavulario&, const std::string&);
+  void añadirAlCorpusP (phishing&, const std::string&);
+  void añadirAlCorpusS (safe&, const std::string&);
+
+  std::map<std::string, double> generarModeloLenguajeSafe (vocavulario&, safe&);
+  std::map<std::string, double> generarModeloLenguajePhishing (vocavulario&, phishing&);
+  void escribirModeloLenguajeSafe (vocavulario&, safe&, std::map<std::string, double>&);
+  void escribirModeloLenguajePhishing (vocavulario&, phishing&, std::map<std::string, double>&);
 };
 
 

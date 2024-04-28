@@ -16,7 +16,7 @@ LDFLAGS =
 
 all: programa clear
 
-programa: programa.o vocavulario.o lectorArchivo.o 
+programa: programa.o vocavulario.o procesador.o phishing.o safe.o
 	$(CXX) $(CXXFLAGS) -o $@ $^ $(LDFLAGS)
 
 .PHONY: all clean

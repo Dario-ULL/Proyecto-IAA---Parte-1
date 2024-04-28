@@ -4,7 +4,7 @@
  * Inteligencia Artificial Avanzada
  * 
  * @author  Dario Dominguez Gonzalez
- * @date    19/04/2024
+ * @date    28/04/2024
  * @brief   Definicion de la clase vocavulario.
 */
 
@@ -13,30 +13,28 @@
 
 #include <fstream>
 #include <iostream>
-#include <sstream>
 #include <string>
-#include <vector>
-#include <cctype>
-#include <algorithm>
 #include <set>
-#include <map>
 
 /**
  * @brief Clase lectorArchivo que estara a cargo de la lectura y filtracion de los correos leidos.
  * 
- * @param numeroPalabras_  -  Atributo privado que guarda el numero de palabras totales.
- * @param diccionario_     -  Atributo privado que guarda todas las palabras seleccionadas.
-*/
+ * @param ficheroSalida_          - Nombre del archivo de salida.
+ * @param diccionario_            - Conjunto que guarda todas las palabras seleccionadas.
+ * @param numeroPalabrasUnicas_   - Número total de palabras únicas en el diccionario.
+ */
+
 class vocavulario {
  private:
-  int numeroPalabras_;
+  std::string ficheroSalida_;
   std::set<std::string> diccionario_;
+  int numeroPalabrasUnicas_;
  public:
-  vocavulario ();
+  vocavulario (std::string);
   void añadirPalabra (std::string);
   std::set<std::string> obtenerDiccionario ();
-  void escribirDiccionario (std::string);
-  void limiarDiccionario ();
+  void escribirDiccionario ();
+  int getNumPalabrasUnicas ();
 };
 
 #endif
